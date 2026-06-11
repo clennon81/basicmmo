@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BasicMMO</title>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<div id="loginScreen">
+  <h1>⚔ BasicMMO</h1>
+  <p class="sub">Enter a name to join the world</p>
+  <input id="nameInput" type="text" placeholder="Your name..." maxlength="20" autofocus/>
+  <button id="loginBtn">Enter World</button>
+  <span id="loginError"></span>
+</div>
+
+<div id="gameScreen">
+  <div id="topBar">
+    <span class="logo">⚔ BasicMMO</span>
+    <div id="hud">
+      <span id="mapLabel" class="overworld">🌿 Overworld</span>
+      <div id="hpWrap">
+        <span>❤️</span>
+        <div id="hpBarOuter"><div id="hpBarInner" style="width:100%"></div></div>
+        <span id="hpText">10/10</span>
+      </div>
+      <span id="coinDisplay">🪙 0</span>
+      <div id="hudRight">
+        <span class="hudBtn" id="btnInv" title="Inventory (I)">🎒 Inv</span>
+        <span class="hudBtn" id="btnChar" title="Character (C)">🧙 Char</span>
+        <span class="hudBtn" id="btnShop" title="Shop (B)">🛒 Shop</span>
+        <span id="soundToggle" title="Toggle sound (M)">🔊</span>
+      </div>
+    </div>
+    <span id="onlineCount">1 online</span>
+  </div>
+
+  <div id="main">
+    <div id="canvasWrap" class="overworld">
+      <canvas id="gameCanvas"></canvas>
+      <div id="damageFlash"></div>
+      <div id="zoneFlash"></div>
+      <div id="doorHint"></div>
+      <div id="notifArea"></div>
+
+      <div id="deathOverlay">
+        <h2>💀 You Died</h2><p>Respawning in overworld...</p>
+        <div id="respawnTimer">3</div>
+      </div>
+
+      <!-- Shop -->
+      <div id="shopOverlay" class="modal">
+        <div class="modalPanel">
+          <div class="modalTitle">🛒 Shop</div>
+          <div id="shopBalance">Coins: <span id="shopCoins">0</span></div>
+          <div id="shopItems"></div>
+          <div id="shopError"></div>
+          <button class="closeBtn" id="shopClose">Close (B)</button>
+        </div>
+      </div>
+
+      <!-- Inventory -->
+      <div id="invOverlay" class="modal">
+        <div class="modalPanel">
+          <div class="modalTitle">🎒 Inventory</div>
+          <div id="invCapacity">0 / 24</div>
+          <div id="invGrid"></div>
+          <div id="invDetail">Select an item to see details.</div>
+          <div id="invActions">
+            <button class="invActBtn" id="btnEquip" disabled>⚔️ Equip</button>
+            <button class="invActBtn" id="btnUse" disabled>🍽 Use</button>
+            <button class="invActBtn" id="btnDrop" disabled>📦 Drop</button>
+            <button class="invActBtn" id="btnSell" disabled>💰 Sell</button>
+            <button class="invActBtn" id="btnPickTrade" disabled>🤝 Offer in Trade</button>
+          </div>
+          <button class="closeBtn" id="invClose">Close (I)</button>
+        </div>
+      </div>
+
+      <!-- Character screen -->
+      <div id="charOverlay" class="modal">
+        <div class="modalPanel">
+          <div class="modalTitle">🧙 Character</div>
+          <div class="equippedSlots" id="equippedSlots"></div>
+          <div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:4px;">Stats</div>
+          <div id="statsList"></div>
+          <div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:4px;">Active Buffs</div>
+          <div id="buffsList"></div>
+          <button class="closeBtn" id="charClose">Close (C)</button>
+        </div>
+      </div>
+
+      <!-- Trade Post -->
+      <div id="tradeOverlay" class="modal">
+        <div class="modalPanel">
+          <div class="modalTitle">🤝 Trading Post</div>
+          <div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;">Active Listings</div>
+          <div id="tradeListings"></div>
+          <div class="tradeForm" id="tradeForm">
+            <h3>Post a Listing</h3>
+            <div style="font-size:0.78rem;color:var(--muted);">Select items to offer:</div>
+            <div id="tradeInvPick"></div>
+            <div class="tradeFormRow">
+              <span style="font-size:0.82rem;color:var(--muted);">Offer coins:</span>
+              <input type="number" class="tradeInput" id="tradeOfferCoins" value="0" min="0"/>
+              <span style="font-size:0.82rem;color:var(--muted);">Want coins:</span>
+              <input type="number" class="tradeInput" id="tradeWantCoins" value="0" min="0"/>
+            </div>
+            <button class="postBtn" id="btnPostTrade">Post Listing</button>
+          </div>
+          <button class="closeBtn" id="tradeClose">Close</button>
+        </div>
+      </div>
+
+      <!-- Notice board -->
+      <div id="boardOverlay" class="modal">
+        <div class="modalPanel">
+          <div class="modalTitle">📋 Notice Board</div>
+          <div style="font-size:0.82rem;color:var(--muted);">Top players by coins</div>
+          <div id="boardList"></div>
+          <button class="closeBtn" id="boardClose">Close</button>
+        </div>
+      </div>
+
+      <div id="crosshair"></div>
+      <div id="lockHint" class="hidden">🖱 Click to look around &amp; aim</div>
+      <canvas id="minimap" width="160" height="160"></canvas>
+      <div id="controls">WASD — move&nbsp;&nbsp;Mouse — look&nbsp;&nbsp;Click — shoot&nbsp;&nbsp;Space — jump<br>I — inventory&nbsp;&nbsp;C — character&nbsp;&nbsp;B — shop&nbsp;&nbsp;M — mute</div>
+    </div>
+
+    <div id="sidebar">
+      <div id="playerList"><h3>Online Players</h3></div>
+      <div id="chatBox">
+        <div id="chatMessages"></div>
+        <div id="chatInputRow">
+          <input id="chatInput" type="text" placeholder="Say something..." maxlength="120"/>
+          <button id="chatSend">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- Module order matters: each layer builds on the previous. -->
+<script src="js/physics.js"></script>   <!-- shared with the server -->
+<script src="js/sound.js"></script>
+<script src="js/core.js"></script>      <!-- config, state, 3D bootstrap -->
+<script src="js/world.js"></script>     <!-- map scene + minimap -->
+<script src="js/entities.js"></script>  <!-- sprites + particles -->
+<script src="js/render.js"></script>    <!-- frame loop + prediction -->
+<script src="js/ui.js"></script>        <!-- modals, chat, HUD -->
+<script src="js/net.js"></script>       <!-- login + sockets -->
+<script src="js/input.js"></script>     <!-- pointer lock + input streaming -->
+</body>
+</html>
