@@ -100,7 +100,7 @@ function startGame(player){
   socket.on("monsterDied",({id})=>{const m=monsters[id];if(m){burst(m.dx_??m.x,m.dy_??m.y,"#a78bfa",14,3);showFloatNum(m.dx_??m.x,m.dy_??m.y,"💀","#cbd5e1");Sound.monsterDie();}delete monsters[id];});
 
   socket.on("coinDropped",c=>{floorCoins[c.id]=c;});
-  socket.on("coinCollected",({coinId,playerId,total})=>{const c=floorCoins[coinId];if(c)sparkle(c.x+0.5,c.y+0.5,"#fcd34d");delete floorCoins[coinId];if(playerId===selfPlayer.id){selfCoins=total;updateCoinDisplay();showFloatNum(predX,predY,"+1🪙","#fcd34d");Sound.coin();}});
+  socket.on("coinCollected",({coinId,playerId,total})=>{const c=floorCoins[coinId];if(c)sparkle(c.x+0.5,c.y+0.5,"#fcd34d");delete floorCoins[coinId];if(playerId===selfPlayer.id){selfCoins=total;updateCoinDisplay();updatePlayerList();showFloatNum(predX,predY,"+1🪙","#fcd34d");Sound.coin();}});
   socket.on("coinUpdate",({coins})=>{selfCoins=coins;updateCoinDisplay();});
 
   socket.on("itemDropped",item=>{floorItems[item.uid]=item;});
