@@ -187,7 +187,7 @@ function getDoorDest(mapId, tile) {
   if (mapId==="overworld" && tile===T.DOOR_DOWN)  return { dest:"dungeon",   x:20, y:27 };
   if (mapId==="dungeon"   && tile===T.DOOR_UP)    return { dest:"overworld", x:20, y:3  };
   if (mapId==="overworld" && tile===T.DOOR_CITY)  return { dest:"city",      x:2,  y:15 };
-  if (mapId==="city"      && tile===T.DOOR_OVERWORLD) return { dest:"overworld", x:35, y:15 };
+  if (mapId==="city"      && tile===T.DOOR_OVERWORLD) return { dest:"overworld", x:36, y:15 };
   return null;
 }
 
